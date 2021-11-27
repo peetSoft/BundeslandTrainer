@@ -1,7 +1,7 @@
 import random
 
 
-class Quiz():
+class Quiz:
     def __init__(self, quan_1, answer_generic_term_1, answer_generic_term_2, synonyms, mnemonics):
         self.quan_1 = quan_1.copy()
         self.answer_generic_term_1 = answer_generic_term_1
