@@ -1,6 +1,6 @@
 import random
+from sources.base_quiz import canonic
 
-#changetest 1
 dict_state_capital = {
     "Baden-Württemberg": "Stuttgart",
     "Bayern": "München",
@@ -58,16 +58,6 @@ states = list(dict_state_capital.keys())
 capitals = list(dict_capital_state.keys())
 counter = 0
 try_number = 10
-
-
-
-def canonic(input_string):
-    string1 = input_string.replace(" ", "-")
-    string2 = string1.split("-")
-    string3 = [i.capitalize() for i in string2 if len(i) > 0]
-    output_string = "-".join(string3)
-    return output_string
-
 
 for i in range(try_number):
     if random.randint(0, 1) == 0:
