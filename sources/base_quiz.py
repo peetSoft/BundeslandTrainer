@@ -20,8 +20,7 @@ class Quiz:
             other_quan = self.quan_1
             answer_generic_term = self.answer_generic_term_2
 
-        question = list(quan.keys())[random.randint(0, len(quan) - 1)]
-        answer = quan[question]
+        question, answer = list(quan.items())[random.randint(0, len(quan) - 1)]
         if question in self.mnemonics:
             mnemonic = self.mnemonics[question]
         elif answer in self.mnemonics:
@@ -35,9 +34,10 @@ class Quiz:
         return answer_generic_term, question, answer, mnemonic
 
     def get_canonic(self, word):
-        if word in self.synonyms:
-            return self.synonyms[word]
-        return canonic(word)
+        canonic_word = canonic(word)
+        if canonic_word in self.synonyms:
+            return self.synonyms[canonic_word]
+        return canonic_word
 
 
 def canonic(input_string):

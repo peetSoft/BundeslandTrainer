@@ -1,5 +1,5 @@
 from base_quiz import Quiz
-from bundestrainer import quan, mnemonics, synonyms, generic_term_1, generic_term_2
+from data_state_capital import quan, mnemonics, synonyms, generic_term_1, generic_term_2
 
 quiz = Quiz(
     quan,
