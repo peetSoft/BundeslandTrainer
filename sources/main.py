@@ -12,11 +12,11 @@ try_number = 10
 counter = 0
 for i in range(try_number):
 
-    answer_generic_term, question, answer, mnemonic = quiz.next_question()
+    answer_generic_term, question, machine_answer, mnemonic = quiz.next_question()
     input_user = input("Geben sie " + answer_generic_term + " von " + question + " ein: ")
     input_user1 = quiz.get_canonic(input_user)
 
-    if input_user1 == answer:
+    if input_user1 == machine_answer:
         counter += 1
         print("Das ist richtig")
     else:
@@ -24,7 +24,7 @@ for i in range(try_number):
             hint = ' // Eselsbrücke: ' + mnemonic
         else:
             hint = ''
-        print("Falsch: " + answer + hint)
+        print("Falsch: " + machine_answer + hint)
 
 percentage = 100 * counter / try_number
 print('--------------------')
