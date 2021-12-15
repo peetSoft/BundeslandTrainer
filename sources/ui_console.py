@@ -1,11 +1,15 @@
 from base_quiz import Quiz
-from data_state_capital import quan, mnemonics, synonyms, generic_term_1, generic_term_2
+from data_EN_DE import DataEnDe
+from data_state_capital import DataStateCapital
+
+game = input("Welches Spiel möchten sie spielen (sc/ed)")
+quiz_data = DataStateCapital() if game == "sc" else DataEnDe()
 
 quiz = Quiz(
-    quan,
-    generic_term_1, generic_term_2,
-    synonyms,
-    mnemonics
+    quiz_data.quan,
+    quiz_data.generic_term_1, quiz_data.generic_term_2,
+    quiz_data.synonyms,
+    quiz_data.mnemonics
 )
 
 try_number = 10
