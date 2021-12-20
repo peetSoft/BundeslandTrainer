@@ -1,5 +1,11 @@
 class DataStateCapital:
+    """
+
+    """
     def __init__(self):
+        self.game_name = "Bundesland Hauptstadt Trainer"
+        self.general_question = " Geben sie #generic# von #question# ein: "
+
         self.quan = {
             "Baden-Württemberg": "Stuttgart",
             "Bayern": "München",
