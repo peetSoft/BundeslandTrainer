@@ -10,7 +10,27 @@ from data_state_capital import DataStateCapital
 
 def send(event=None):
     global positive_counter, negative_counter, machine_answer
-    if machine_answer != "":
+    counter = positive_counter + negative_counter
+    if machine_answer == "":
+        # Das passiert alles wenn machine answer "leer" ist.
+
+        if counter == total_tries:  # Bei Beendigung der kompletten Versuche
+
+            user_entry.config(state="disabled")
+            counter_wrong_label.config(text="")
+            counter_right_label.config(text="")
+            question_valuation_label.config(text="")
+            next_question_text_label.config(text="")
+            mnemonic_label.config(text="")
+            positive_counter = 0
+            negative_counter = 0
+            machine_answer = ""
+        else:
+            user_entry.config(state="normal")
+            next_question()  # next_question wird aufgerufen.
+            # return
+
+    else:
         user_answer = user_entry.get()
         user_answer_canonic = quiz.get_canonic(user_answer)
 
@@ -18,41 +38,26 @@ def send(event=None):
             positive_counter += 1
             counter_right_label.config(text=str(positive_counter))
             question_valuation_label.config(text=machine_answer + " : Das ist richtig")
+            next_question()
         else:
             negative_counter += 1
             counter_wrong_label.config(text=str(negative_counter))
             question_valuation_label.config(text="Falsch!  Richtige Antwort ist:" + machine_answer)
 
-            mnemonic_label.config(text= mnemonic)
-        counter_count_label.config(text=str(negative_counter) + " " + str(positive_counter))
-
-        user_entry.delete(0, "end")
-        if positive_counter + negative_counter == total_tries:  # Bei Beendigung der kompletten Versuche
+            mnemonic_label.config(text=mnemonic)
+        if positive_counter + negative_counter == total_tries:
+            machine_answer = ""
             result = 100 * positive_counter / total_tries
             if result < 30:
-                user_evaluation_label.config(text="Starke Bildungslücke!")
+                user_evaluation_label_text.config(text="Starke Bildungslücke!")
             elif result < 70:
-                user_evaluation_label.config(text="Das muss besser werden!")
+                user_evaluation_label_text.config(text="Das muss besser werden!")
             else:
-                user_evaluation_label.config(text="Sehr stark!")
-            positive_counter = 0
-            negative_counter = 0
+                user_evaluation_label_text.config(text="Sehr stark!")
 
-            press_enter_label.config(text="Für ein neues Spiel Enter drücken!")
-            user_entry.config(state="disabled")
-            counter_wrong_label.config(text="")
-            counter_right_label.config(text="")
-            question_valuation_label.config(text="")
-            next_question_text_label.config(text="")
-            machine_answer = ""
-            return
-        next_question()
-    else:  # Das passiert alles wenn machine answer "leer" ist.
-        press_enter_label.config(text="", )
-        counter_count_label.config(text="")
-        user_evaluation_label.config(text="")
-        user_entry.config(state="normal")
-        next_question()  # next_question wird aufgerufen.
+        else:
+            next_question()
+        user_entry.delete(0, "end")
 
 
 def next_question():
@@ -111,6 +116,7 @@ game_menu.add_radiobutton(label=de_en_data.game_name, variable=game, value=2, co
 
 ## Variables for Labels and Pack
 text_color = "#4dffff"
+text_width = 50
 
 title_color = "#ff9933"
 title_font = 18
@@ -131,29 +137,30 @@ row7 = tk.Frame(root)
 ## Labels Entrys Button (text,size,fonts,bg)
 current_game_name_label = tk.Label(row0, text=f"Spiel: {quiz_data.game_name}",
                                    bg="#5d6d7e", font=20)
-press_enter_label = tk.Label(root, text=" Drücken sie Enter zum starten.",
-                             bg="#b3ffb3", font=15)
+
 next_question_title_label = tk.Label(row1, text='Frage: ', bg="#ff9933",
                                      font=18, width=11, anchor="w")
-next_question_text_label = tk.Label(row1, text='', bg=text_color, font=18, width=50, anchor="w")
+next_question_text_label = tk.Label(row1, text='', bg=text_color, font=18, width=text_width, anchor="w")
 user_answer_title_label = tk.Label(row2, text="Antwort: ", bg=title_color, font=title_font, width=title_width,
                                    anchor=title_anchor)
 user_entry = tk.Entry(row2, width=40, state="disabled")
 send_button = tk.Button(row2, text="Absenden", command=send, bg="#ffffcc")  ## Absenden in der GUI löst send() aus
-correctness_counter_right_title = tk.Label(row3, text="Richtig: ", bg=title_color, font=title_font, width=title_width,
-                                           anchor=title_anchor)
-correctness_counter_wrong_title = tk.Label(row4, text="Falsch: ", bg=title_color, font=title_font, width=title_width,
-                                           anchor=title_anchor)
-machine_result_title = tk.Label(row5, text="Resultat: ", bg=title_color, font=title_font, width=title_width,
+machine_result_title = tk.Label(row3, text="Resultat: ", bg=title_color, font=title_font, width=title_width,
                                 anchor=title_anchor)
-counter_right_label = tk.Label(row3, text=str(positive_counter), width=3, bg=text_color)
-counter_wrong_label = tk.Label(row4, text=str(negative_counter), width=3, bg=text_color)
-question_valuation_label = tk.Label(row5, bg="#99ffff", font=12)
-counter_count_label = tk.Label(row6, bg="#ff794d", font=15)
-user_evaluation_label = tk.Label(row6, bg=text_color, font=15)
-mnemonic_title = tk.Label(row6, text="Eselsbrücke ", bg=title_color, font=title_font, width=title_width,
+question_valuation_label = tk.Label(row3, bg=text_color, font=18, width=text_width)
+mnemonic_title = tk.Label(row4, text="Eselsbrücke ", bg=title_color, font=title_font, width=title_width,
                           anchor=title_anchor)
-mnemonic_label = tk.Label(row6, text='', bg=text_color, font=18, width=50, anchor="w")
+mnemonic_label = tk.Label(row4, text='', bg=text_color, font=18, width=text_width, anchor="w")
+correctness_counter_right_title = tk.Label(row5, text="Richtig: ", bg=title_color, font=title_font, width=title_width,
+                                           anchor=title_anchor)
+counter_right_label = tk.Label(row5, text=str(positive_counter), width=3, bg=text_color)
+correctness_counter_wrong_title = tk.Label(row6, text="Falsch: ", bg=title_color, font=title_font, width=title_width,
+                                           anchor=title_anchor)
+counter_wrong_label = tk.Label(row6, text=str(negative_counter), width=3, bg=text_color)
+
+user_evaluation_label_title = tk.Label(row7, text="Auswertung", bg=title_color, font=title_font, width=title_width,
+                                   anchor=title_anchor)
+user_evaluation_label_text = tk.Label(row7, bg=text_color, font=18, width=text_width, anchor="w" )
 # Layout-Manager
 ## Frames .pack
 row0.pack(pady=(10, 10))
@@ -163,7 +170,9 @@ row3.pack(fill="x", pady=(10, 10))
 row4.pack(fill="x", pady=(10, 10))
 row5.pack(fill="x", pady=(10, 10))
 row6.pack(fill="x", pady=(10, 10))
-row7.pack(fill="x")
+row7.pack(fill="x", pady=(10, 10))
+
+title_pack_parameter={"side": "left", "anchor": "w", "padx":(0, 40)}
 
 ## Labels, Etry, Button, .pack
 current_game_name_label.pack()
@@ -172,7 +181,7 @@ next_question_text_label.pack(side="left", anchor="w")
 user_answer_title_label.pack(side="left", anchor="w", padx=(0, 40))
 user_entry.pack(side="left", anchor="w")
 send_button.pack(side="left", anchor="w", padx=(60, 0))
-correctness_counter_right_title.pack(side="left", anchor="w", padx=(0, 40))
+correctness_counter_right_title.pack(**title_pack_parameter)
 correctness_counter_wrong_title.pack(side="left", anchor="w", padx=(0, 40))
 counter_right_label.pack(side="left", anchor="w", padx=(0, 40))
 counter_wrong_label.pack(side="left", anchor="w", padx=(0, 40))
@@ -180,6 +189,8 @@ machine_result_title.pack(side="left", anchor="w", padx=(0, 40))
 question_valuation_label.pack(side="left", anchor="w", padx=(0, 40))
 mnemonic_title.pack(side="left", anchor="w", padx=(0, 40))
 mnemonic_label.pack(side="left", anchor="w", padx=(0, 40))
+user_evaluation_label_title.pack(**title_pack_parameter)
+user_evaluation_label_text.pack(side="left", anchor="w")
 
 root.bind('<Return>', send)
 root.mainloop()
@@ -193,4 +204,13 @@ user_entry.grid(row=0, column=0, pady=10, sticky="W")  # --> Frame2
 question_valuation_label.grid(row=0, column=0, pady=10, sticky="W")  # -> Frame3
 counter_count_label.grid(row=1, column=0, sticky="W")  # -> Frame 3
 user_evaluation_label.grid(row=2, column=0, pady=10, sticky="W")  # -> Frame 3
+"""
+
+"""result = 100 * positive_counter / total_tries
+if result < 30:
+    user_evaluation_label.config(text="Starke Bildungslücke!")
+elif result < 70:
+    user_evaluation_label.config(text="Das muss besser werden!")
+else:
+    user_evaluation_label.config(text="Sehr stark!")
 """
