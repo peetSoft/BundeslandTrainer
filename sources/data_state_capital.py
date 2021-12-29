@@ -1,3 +1,11 @@
+def create_game_collection():
+    game_collection={}
+    state_capital_data = DataStateCapital()
+    game_collection[state_capital_data.game_name]=state_capital_data
+
+
+
+
 class DataStateCapital:
     """
 
