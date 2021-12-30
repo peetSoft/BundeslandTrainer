@@ -1,11 +1,6 @@
 import tkinter as tk
 from base_quiz import Quiz
-from data_EN_DE import DataEnDe
-from data_state_capital import DataStateCapital
-
-"""
-3 Klassen werden importiert. 
-"""
+from data_state_capital import create_game_collection
 
 
 def send(event=None):
@@ -60,10 +55,10 @@ def send(event=None):
 
 
 def next_question():
-    global machine_answer, mnemonic, quiz_data  # wird generiert und global gemacht?
+    global machine_answer, mnemonic  # wird generiert und global gemacht?
     generic_term, question, machine_answer, mnemonic = quiz.next_question()  # die 4 Variablen werden in Class Quiz
     # Hergestellt und hier benutzt.
-    txt = quiz_data.general_question
+    txt = quiz.general_question
     txt1 = txt.replace("#generic#", generic_term)  # Was wird hier warum replaced ?
     txt2 = txt1.replace("#question#", question)
     next_question_text_label.config(text=txt2)  # im next_question_label wird text2 ausgespielt.
@@ -72,16 +67,11 @@ def next_question():
 
 
 def game_changer():
-    global quiz, current_game_name_label, quiz_data
-    if game.get() == 1:
-        quiz_data = state_capital_data
-    elif game.get() == 2:
-        quiz_data = de_en_data
-    else:
-        quiz_data = None
-    current_game_name_label.config(text=quiz_data.game_name)
-    quiz.config(quiz_data.quan, quiz_data.generic_term_1, quiz_data.generic_term_2,
-                quiz_data.synonyms, quiz_data.mnemonics)
+    global quiz, current_game_name_label, games
+    game = games[game_index.get()]
+    current_game_name_label.config(text=game.game_name)
+    quiz.config(game.quan, game.general_question, game.generic_term_1, game.generic_term_2,
+                game.synonyms, game.mnemonics)
 
 
 positive_counter = 0
@@ -91,29 +81,12 @@ total_tries = 3
 machine_answer = ""  # machine_answer wird ein leerer String zugewiesen
 mnemonic = ""
 
-de_en_data = DataEnDe()  # initierung der Klasse
-state_capital_data = DataStateCapital()  # initierung der Klasse
-
-quiz_data = state_capital_data
-
-quiz = Quiz(quiz_data.quan, quiz_data.generic_term_1, quiz_data.generic_term_2,
-            quiz_data.synonyms, quiz_data.mnemonics)
+quiz = Quiz()
 '''
-Initierung der Klasse: 3 initierte Klassen ( quiz_en_de_data, state_capital_data, quiz )
+Initiierung der Klasse: 3 initierte Klassen ( quiz_en_de_data, state_capital_data, quiz )
 '''
 root = tk.Tk()
 root.geometry("1000x450")
-
-## Menu
-gui_menu = tk.Menu(root)
-root.config(menu=gui_menu)
-
-game = tk.IntVar(value=1)
-
-game_menu = tk.Menu(gui_menu)
-gui_menu.add_cascade(label="Game", menu=game_menu)
-game_menu.add_radiobutton(label=state_capital_data.game_name, variable=game, value=1, command=game_changer)
-game_menu.add_radiobutton(label=de_en_data.game_name, variable=game, value=2, command=game_changer)
 
 ## Variables for Labels and Pack
 text_color = "#4dffff"
@@ -134,8 +107,7 @@ row8 = tk.Frame(root)
 title_style_parameters = {"bg": "#ff9933", "font": 18, "width": 11, "anchor": "w"}
 text_style_parameters = {'bg': text_color, 'font': 18, 'width': text_width, 'anchor': "w"}
 ## Labels Entrys Button (text,size,fonts,bg)
-current_game_name_label = tk.Label(row0, text=f"Spiel: {quiz_data.game_name}",
-                                   bg="#5d6d7e", font=20)
+current_game_name_label = tk.Label(row0, bg="#5d6d7e", font=20)
 
 next_question_title_label = tk.Label(row1, text='Frage: ', **title_style_parameters)
 next_question_text_label = tk.Label(row1, text='', **text_style_parameters)
@@ -159,7 +131,7 @@ counter_wrong_label = tk.Label(row6, text=str(negative_counter), width=3, bg=tex
 user_evaluation_label_title = tk.Label(row7, text="Auswertung", **title_style_parameters)
 user_evaluation_label_text = tk.Label(row7, **text_style_parameters)
 
-hint_text=tk.Label(row8,text ='Hint',bg= "#c2d6d6", font= 7, width= text_width+15, anchor= "w")
+hint_text = tk.Label(row8, text='Hint', bg="#c2d6d6", font=7, width=text_width + 15, anchor="w")
 
 # Layout-Manager
 ## Frames .pack
@@ -195,24 +167,19 @@ user_evaluation_label_text.pack(side="left", anchor="w")
 hint_text.pack(side="left", anchor="w")
 
 root.bind('<Return>', send)
+
+## Menu
+gui_menu = tk.Menu(root)
+root.config(menu=gui_menu)
+
+gi, games = create_game_collection()
+game_index = tk.IntVar(value=gi)
+
+game_menu = tk.Menu(gui_menu)
+gui_menu.add_cascade(label="Game", menu=game_menu)
+for gi in range(len(games)):
+    game_menu.add_radiobutton(label=games[gi].game_name, variable=game_index, value=gi, command=game_changer)
+game_changer()
+
 root.mainloop()
 
-"""# Label, Button, Entry --> Packmanager .grid
-current_game_name_label.grid(row=0, pady=10, sticky="W")  # --> Frame1
-press_enter_label.grid(row=1, column=0, pady=10, sticky="W")  # --> Frame1
-next_question_label.grid(row=2, column=0, pady=10, sticky="W")  # --> Frame1
-send_button.grid(row=0, column=1, padx=20, pady=10, sticky="W", )  # --> Frame2
-user_entry.grid(row=0, column=0, pady=10, sticky="W")  # --> Frame2
-question_valuation_label.grid(row=0, column=0, pady=10, sticky="W")  # -> Frame3
-counter_count_label.grid(row=1, column=0, sticky="W")  # -> Frame 3
-user_evaluation_label.grid(row=2, column=0, pady=10, sticky="W")  # -> Frame 3
-"""
-
-"""result = 100 * positive_counter / total_tries
-if result < 30:
-    user_evaluation_label.config(text="Starke Bildungslücke!")
-elif result < 70:
-    user_evaluation_label.config(text="Das muss besser werden!")
-else:
-    user_evaluation_label.config(text="Sehr stark!")
-"""

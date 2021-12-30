@@ -1,18 +1,24 @@
 def create_game_collection():
-    game_collection={}
-    state_capital_data = DataStateCapital()
-    game_collection[state_capital_data.game_name]=state_capital_data
-
-
+    '''
+    Creation of game collection (a list)
+    :return:
+       - index of start game
+       - list of  data of games
+    '''
+    games = [
+        DataStateCapital(),
+        DataEnDe()
+    ]
+    return 0, games
 
 
 class DataStateCapital:
     """
 
     """
+
     def __init__(self):
         self.game_name = "Bundesland Hauptstadt Trainer"
-        self.general_question = " Geben sie #generic# von #question# ein: "
 
         self.quan = {
             "Baden-Württemberg": "Stuttgart",
@@ -56,5 +62,29 @@ class DataStateCapital:
 
         }
         self.synonyms = {"Nrw": "Nordrhein-Westfalen", "Meck-Pomm": "Mecklenburg-Vorpommern"}
+        self.general_question = " Geben sie #generic# von #question# ein: "
         self.generic_term_1 = 'die Hauptstadt'
         self.generic_term_2 = 'das Bundesland'
+
+
+class DataEnDe:
+    def __init__(self):
+        self.game_name = "Englisch deutsch dictionary"
+
+        self.quan = {
+            "House": "Haus",
+            "Walk": "Gehen",
+            "Table": "Tisch",
+        }
+
+        self.mnemonics = {
+            "House": "klingt gleich",
+            "Walk": "jemand geht auf Wolken",
+        }
+        self.synonyms = {
+            "Building": "House",
+            "Go": "Walk"
+        }
+        self.general_question = " übersetzen sie das Wort #question# in #generic#: "
+        self.generic_term_1 = 'deutsch'
+        self.generic_term_2 = 'englisch'

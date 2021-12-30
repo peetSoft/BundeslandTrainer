@@ -2,18 +2,21 @@ import random
 
 
 class Quiz:
-    def __init__(self, quan_1, answer_generic_term_1, answer_generic_term_2, synonyms, mnemonics):
-        self.quan_1 = quan_1.copy()
-        self.answer_generic_term_1 = answer_generic_term_1
-        self.answer_generic_term_2 = answer_generic_term_2
-        self.mnemonics = mnemonics
-        self.synonyms = synonyms
-        self.quan_2 = dict((v, k) for k, v in quan_1.items())
+    def __init__(self, quan_1=None, answer_generic_term_1=None, answer_generic_term_2=None,
+                 synonyms=None, mnemonics=None):
+        pass
+        # self.quan_1 = quan_1.copy()
+        # self.answer_generic_term_1 = answer_generic_term_1
+        # self.answer_generic_term_2 = answer_generic_term_2
+        # self.mnemonics = mnemonics
+        # self.synonyms = synonyms
+        # self.quan_2 = dict((v, k) for k, v in quan_1.items())
 
-    def config(self, quan_1, answer_generic_term_1, answer_generic_term_2, synonyms, mnemonics):
+    def config(self, quan_1, general_question, generic_term_1, generic_term_2, synonyms, mnemonics):
         self.quan_1 = quan_1.copy()
-        self.answer_generic_term_1 = answer_generic_term_1
-        self.answer_generic_term_2 = answer_generic_term_2
+        self.general_question = general_question
+        self.generic_term_1 = generic_term_1
+        self.generic_term_2 = generic_term_2
         self.mnemonics = mnemonics
         self.synonyms = synonyms
         self.quan_2 = dict((v, k) for k, v in quan_1.items())
@@ -22,11 +25,11 @@ class Quiz:
         if random.randint(0, 1) == 0:
             quan = self.quan_1
             other_quan = self.quan_2
-            answer_generic_term = self.answer_generic_term_1
+            answer_generic_term = self.generic_term_1
         else:
             quan = self.quan_2
             other_quan = self.quan_1
-            answer_generic_term = self.answer_generic_term_2
+            answer_generic_term = self.generic_term_2
 
         question, answer = list(quan.items())[random.randint(0, len(quan) - 1)]
         # chooses random question and answer from quan

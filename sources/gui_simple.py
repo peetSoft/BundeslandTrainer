@@ -1,7 +1,6 @@
 import tkinter as tk
 from base_quiz import Quiz
-from data_EN_DE import DataEnDe
-from data_state_capital import DataStateCapital
+from data_state_capital import DataStateCapital, DataEnDe
 
 """
 3 Klassen werden importiert. 
