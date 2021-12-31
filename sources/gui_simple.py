@@ -1,6 +1,6 @@
 import tkinter as tk
 from base_quiz import Quiz
-from data_state_capital import create_game_collection
+from games_data import create_game_collection
 
 
 def send(event=None):
