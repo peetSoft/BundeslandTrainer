@@ -54,7 +54,8 @@ class Quiz:
 
 def canonic(input_string):
     string1 = input_string.replace(" ", "-")
-    string2 = string1.split("-")
-    string3 = [i.capitalize() for i in string2 if len(i) > 0]
-    output_string = "-".join(string3)
+    list2 = string1.split("-")
+    list3 = [i.capitalize() for i in list2 if len(i) > 0]
+    output_string = "-".join(list3)
     return output_string
+

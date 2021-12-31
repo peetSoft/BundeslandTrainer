@@ -1,5 +1,16 @@
-1. 9/12 Gui schicker machen
-2. Menü Funktion anschauen
-3. Fragestellung für DataEnDe besser formulieren.
-4. Kanonisierung für das Englische anschauen.
-5. Zunächst sprachlich ausformulieren / Für beide Spiele (beide Richtungen)
+1. [ ] 9/12 Gui schicker machen
+2. [ ] Kanonisieren für Englisch
+
+16/12
+
+Änderungen zum anschauen:
+
+def game_changer anschauen.
+
+lambda Funktionen anschauen.
+
+20/12
+
+radio Button Test GUI
+
+in GUI Simple Labels ordentlich anordnen.

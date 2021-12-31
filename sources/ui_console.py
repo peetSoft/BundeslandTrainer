@@ -1,8 +1,14 @@
 from base_quiz import Quiz
-from data_state_capital import DataStateCapital, DataEnDe
+from games_data import create_game_collection
 
-game = input("Welches Spiel möchten sie spielen (sc/ed)")
-quiz_data = DataStateCapital() if game == "sc" else DataEnDe()
+index, games_data = create_game_collection()
+
+for i in range(len(games_data)):
+    print(f"{i + 1}. {games_data[i].game_name}")
+
+game_number = int(input("Welches Spiel möchten sie spielen? (Nummer eingeben):"))
+
+quiz_data = games_data[game_number - 1]
 
 quiz = Quiz()
 quiz.config(quiz_data.quan, quiz_data.general_question, quiz_data.generic_term_1, quiz_data.generic_term_2,
