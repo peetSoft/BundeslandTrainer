@@ -3,20 +3,108 @@ from base_quiz import Quiz
 from games_data import create_game_collection
 
 
+def set_state1():
+    global state, positive_counter, negative_counter
+    next_question_text.config(text="")
+    user_entry.config(state="disabled")
+    question_valuation_text.config(text="")
+    mnemonic_text.config(text="")
+    counter_right_text.config(text="")
+    counter_wrong_text.config(text="")
+    user_evaluation_text.config(text="")
+    hint_text.config(text="Starten sie das Spiel mit Enter oder Senden")
+    positive_counter = negative_counter = 0
+    state = 1
+
+
+def set_state2():
+    global state
+    next_question_text.config(text=next_question())  # im next_question_label wird text2 ausgespielt.
+    user_entry.config(state='normal')
+    user_entry.focus_force()
+    question_valuation_text.config(text="")
+    mnemonic_text.config(text="")
+    counter_right_text.config(text=str(positive_counter))
+    counter_wrong_text.config(text=str(negative_counter))
+    user_evaluation_text.config(text="")
+    hint_text.config(text="Geben Sie eine Antwort ein, und bestätigen Sie mit Send oder Enter")
+    state = 2
+    user_entry.delete(0,"end")
+
+
+def set_state3():
+    global state, positive_counter, negative_counter
+    #next_question_text.config(text=next_question())  # im next_question_label wird text2 ausgespielt.
+    user_entry.config(state='disabled',)
+    user_answer = user_entry.get()
+    user_answer_canonic = quiz.get_canonic(user_answer)
+    if user_answer_canonic == machine_answer:
+        positive_counter += 1
+        counter_right_text.config(text=str(positive_counter))
+        question_valuation_text.config(text=machine_answer + " : Das ist richtig")
+    else:
+        negative_counter += 1
+        counter_wrong_text.config(text=str(negative_counter))
+        question_valuation_text.config(text="Falsch!  Richtige Antwort ist:" + machine_answer)
+
+        mnemonic_text.config(text=mnemonic)
+    user_evaluation_text.config(text="")
+    hint_text.config(text="Enter oder Send für nächste Frage")
+    state = 3
+
+
+def set_state4():
+    global state, positive_counter, negative_counter
+    next_question_text.config(text="")
+    user_entry.config( state='disabled')
+
+    question_valuation_text.config(text="")
+    mnemonic_text.config(text="")
+
+    result = 100 * positive_counter / total_tries
+    if result < 30:
+        user_evaluation_text.config(text="Starke Bildungslücke!")
+    elif result < 70:
+        user_evaluation_text.config(text="Das muss besser werden!")
+    else:
+        user_evaluation_text.config(text="Sehr stark!")
+
+    hint_text.config(text="Für ein neues Spiel drücken Sie Enter.")
+    positive_counter = negative_counter = 0
+
+    state = 4
+
+
 def send(event=None):
+    global state
+    if state == 1:
+        set_state2()
+    elif state == 2:
+        set_state3()
+    elif state == 3:
+        if positive_counter + negative_counter == total_tries:
+            set_state4()
+        else:
+            set_state2()
+    elif state == 4:
+        set_state2()
+
+
+def send_old(event=None):
     global positive_counter, negative_counter, machine_answer
     counter = positive_counter + negative_counter
+
     if machine_answer == "":
         # Das passiert alles wenn machine answer "leer" ist.
 
         if counter == total_tries:  # Bei Beendigung der kompletten Versuche
 
             user_entry.config(state="disabled")
-            counter_wrong_label.config(text="")
-            counter_right_label.config(text="")
-            question_valuation_text_label.config(text="")
-            next_question_text_label.config(text="")
-            mnemonic_label.config(text="")
+            counter_wrong_text.config(text="")
+            counter_right_text.config(text="")
+            question_valuation_text.config(text="")
+            next_question_text.config(text="")
+            mnemonic_text.config(text="")
             positive_counter = 0
             negative_counter = 0
             machine_answer = ""
@@ -30,24 +118,24 @@ def send(event=None):
 
         if user_answer_canonic == machine_answer:
             positive_counter += 1
-            counter_right_label.config(text=str(positive_counter))
-            question_valuation_text_label.config(text=machine_answer + " : Das ist richtig")
+            counter_right_text.config(text=str(positive_counter))
+            question_valuation_text.config(text=machine_answer + " : Das ist richtig")
             next_question()
         else:
             negative_counter += 1
-            counter_wrong_label.config(text=str(negative_counter))
-            question_valuation_text_label.config(text="Falsch!  Richtige Antwort ist:" + machine_answer)
+            counter_wrong_text.config(text=str(negative_counter))
+            question_valuation_text.config(text="Falsch!  Richtige Antwort ist:" + machine_answer)
 
-            mnemonic_label.config(text=mnemonic)
+            mnemonic_text.config(text=mnemonic)
         if positive_counter + negative_counter == total_tries:
             machine_answer = ""
             result = 100 * positive_counter / total_tries
             if result < 30:
-                user_evaluation_label_text.config(text="Starke Bildungslücke!")
+                user_evaluation_text.config(text="Starke Bildungslücke!")
             elif result < 70:
-                user_evaluation_label_text.config(text="Das muss besser werden!")
+                user_evaluation_text.config(text="Das muss besser werden!")
             else:
-                user_evaluation_label_text.config(text="Sehr stark!")
+                user_evaluation_text.config(text="Sehr stark!")
 
         else:
             next_question()
@@ -61,9 +149,7 @@ def next_question():
     txt = quiz.general_question
     txt1 = txt.replace("#generic#", generic_term)  # Was wird hier warum replaced ?
     txt2 = txt1.replace("#question#", question)
-    next_question_text_label.config(text=txt2)  # im next_question_label wird text2 ausgespielt.
-    user_entry.config(state='normal')
-    user_entry.focus_force()
+    return txt2
 
 
 def game_changer():
@@ -74,6 +160,7 @@ def game_changer():
                 game.synonyms, game.mnemonics)
 
 
+state = 1
 positive_counter = 0
 negative_counter = 0
 total_tries = 3
@@ -109,33 +196,32 @@ text_style_parameters = {'bg': text_color, 'font': 18, 'width': text_width, 'anc
 ## Labels Entrys Button (text,size,fonts,bg)
 current_game_name_label = tk.Label(row0, bg="#5d6d7e", font=20)
 
-next_question_title_label = tk.Label(row1, text='Frage: ', **title_style_parameters)
-next_question_text_label = tk.Label(row1, text='', **text_style_parameters)
+next_question_title = tk.Label(row1, text='Frage: ', **title_style_parameters)
+next_question_text = tk.Label(row1, text='', **text_style_parameters)
 
-user_answer_title_label = tk.Label(row2, text="Antwort: ", **title_style_parameters)
+user_answer_title = tk.Label(row2, text="Antwort: ", **title_style_parameters)
 user_entry = tk.Entry(row2, width=40, state="disabled")
 send_button = tk.Button(row2, text="Absenden", command=send, bg="#ffffcc")  ## Absenden in der GUI löst send() aus
 
-machine_result_title_label = tk.Label(row3, text="Resultat: ", **title_style_parameters)
-question_valuation_text_label = tk.Label(row3, bg=text_color, font=18, width=text_width)
+machine_result_title = tk.Label(row3, text="Resultat: ", **title_style_parameters)
+question_valuation_text = tk.Label(row3, bg=text_color, font=18, width=text_width)
 
 mnemonic_title = tk.Label(row4, text="Eselsbrücke ", **title_style_parameters)
-mnemonic_label = tk.Label(row4, text='', **text_style_parameters)
+mnemonic_text = tk.Label(row4, text='', **text_style_parameters)
 
-correctness_counter_right_title = tk.Label(row5, text="Richtig: ", **title_style_parameters)
-counter_right_label = tk.Label(row5, text=str(positive_counter), width=3, bg=text_color)
+counter_right_title = tk.Label(row5, text="Richtig: ", **title_style_parameters)
+counter_right_text = tk.Label(row5, text=str(positive_counter), width=3, bg=text_color)
 
-correctness_counter_wrong_title = tk.Label(row6, text="Falsch: ", **title_style_parameters)
-counter_wrong_label = tk.Label(row6, text=str(negative_counter), width=3, bg=text_color)
+counter_wrong_title = tk.Label(row6, text="Falsch: ", **title_style_parameters)
+counter_wrong_text = tk.Label(row6, text=str(negative_counter), width=3, bg=text_color)
 
-user_evaluation_label_title = tk.Label(row7, text="Auswertung", **title_style_parameters)
-user_evaluation_label_text = tk.Label(row7, **text_style_parameters)
+user_evaluation_title = tk.Label(row7, text="Auswertung", **title_style_parameters)
+user_evaluation_text = tk.Label(row7, **text_style_parameters)
 
-hint_text = tk.Label(row8, text='Hint', bg="#c2d6d6", font=7, width=text_width + 15, anchor="w")
+hint_text = tk.Label(row8, text='Hint', bg="#c2d6d6", font=("Courier", 10,"italic") , width=text_width + 20, anchor="w")
 
 # Layout-Manager
-## Frames .pack
-row0.pack(pady=(10, 10))
+## Frames .pack2 row0.pack(pady=(10, 10))
 row1.pack(fill="x", pady=(10, 10))
 row2.pack(fill="x", pady=(10, 10))
 row3.pack(fill="x", pady=(10, 10))
@@ -147,23 +233,23 @@ row8.pack(fill="x", pady=(10, 10))
 
 title_pack_parameter = {"side": "left", "anchor": "w", "padx": (0, 40)}
 
-## Labels, Etry, Button, .pack
+## Labels, Entry, Button, .pack
 current_game_name_label.pack()
-next_question_title_label.pack(**title_pack_parameter)
-next_question_text_label.pack(side="left", anchor="w")
-user_answer_title_label.pack(**title_pack_parameter)
+next_question_title.pack(**title_pack_parameter)
+next_question_text.pack(side="left", anchor="w")
+user_answer_title.pack(**title_pack_parameter)
 user_entry.pack(side="left", anchor="w")
 send_button.pack(side="left", anchor="w", padx=(60, 0))
-correctness_counter_right_title.pack(**title_pack_parameter)
-correctness_counter_wrong_title.pack(side="left", anchor="w", padx=(0, 40))
-counter_right_label.pack(**title_pack_parameter)
-counter_wrong_label.pack(**title_pack_parameter)
-machine_result_title_label.pack(**title_pack_parameter)
-question_valuation_text_label.pack(**title_pack_parameter)
+counter_right_title.pack(**title_pack_parameter)
+counter_wrong_title.pack(side="left", anchor="w", padx=(0, 40))
+counter_right_text.pack(**title_pack_parameter)
+counter_wrong_text.pack(**title_pack_parameter)
+machine_result_title.pack(**title_pack_parameter)
+question_valuation_text.pack(**title_pack_parameter)
 mnemonic_title.pack(**title_pack_parameter)
-mnemonic_label.pack(side="left", anchor="w", padx=(0, 40))
-user_evaluation_label_title.pack(**title_pack_parameter)
-user_evaluation_label_text.pack(side="left", anchor="w")
+mnemonic_text.pack(side="left", anchor="w", padx=(0, 40))
+user_evaluation_title.pack(**title_pack_parameter)
+user_evaluation_text.pack(side="left", anchor="w")
 hint_text.pack(side="left", anchor="w")
 
 root.bind('<Return>', send)
@@ -181,5 +267,5 @@ for gi in range(len(games)):
     game_menu.add_radiobutton(label=games[gi].game_name, variable=game_index, value=gi, command=game_changer)
 game_changer()
 
+set_state1()
 root.mainloop()
-

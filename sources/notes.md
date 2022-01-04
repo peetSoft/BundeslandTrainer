@@ -1,5 +1,6 @@
-1. [ ] 9/12 Gui schicker machen
-2. [ ] Kanonisieren für Englisch
+
+3. [ ] 9/12 Gui schicker machen
+4. [ ] Kanonisieren für Englisch
 
 16/12
 
@@ -13,4 +14,14 @@ lambda Funktionen anschauen.
 
 radio Button Test GUI
 
-in GUI Simple Labels ordentlich anordnen.
+**31.12**
+
+def canonic anschauen.
+
+Funktion send nach States ändern. # Rollback bei Verlaufen
+
+Neue Funktion send1 --> Umschalten zwischen states.
+
+global Variable state herstellen. Start Value von state = 1
+
+Programmieren welcher State nach dem aktuellen kommt.
