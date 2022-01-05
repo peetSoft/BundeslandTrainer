@@ -20,7 +20,7 @@ def set_state1():
 
 def set_state2():
     global state
-    next_question_text.config(text=next_question())  # im next_question_label wird text2 ausgespielt.
+    next_question_text.config(text=str(negative_counter+positive_counter+1)+"."+next_question())
     user_entry.config(state='normal')
     user_entry.focus_force()
     question_valuation_text.config(text="")
@@ -51,7 +51,10 @@ def set_state3():
 
         mnemonic_text.config(text=mnemonic)
     user_evaluation_text.config(text="")
-    hint_text.config(text="Enter oder Absenden für nächste Frage")
+    if positive_counter + negative_counter == total_tries:
+        hint_text.config(text="Enter oder Absenden für Ihre Bewertung")
+    else:
+        hint_text.config(text="Enter oder Absenden für nächste Frage")
     state = 3
     state_text.config(text=state)
 
@@ -63,7 +66,6 @@ def set_state4():
 
     question_valuation_text.config(text="")
     mnemonic_text.config(text="")
-
     result = 100 * positive_counter / total_tries
     if result < 30:
         user_evaluation_text.config(text="Starke Bildungslücke!")
@@ -93,57 +95,6 @@ def send(event=None):
         set_state2()
 
 
-def send_old(event=None):
-    global positive_counter, negative_counter, machine_answer
-    counter = positive_counter + negative_counter
-
-    if machine_answer == "":
-        # Das passiert alles wenn machine answer "leer" ist.
-
-        if counter == total_tries:  # Bei Beendigung der kompletten Versuche
-
-            user_entry.config(state="disabled")
-            counter_wrong_text.config(text="")
-            counter_right_text.config(text="")
-            question_valuation_text.config(text="")
-            next_question_text.config(text="")
-            mnemonic_text.config(text="")
-            positive_counter = 0
-            negative_counter = 0
-            machine_answer = ""
-        else:
-            next_question()  # next_question wird aufgerufen.
-            # return
-
-    else:
-        user_answer = user_entry.get()
-        user_answer_canonic = quiz.get_canonic(user_answer)
-
-        if user_answer_canonic == machine_answer:
-            positive_counter += 1
-            counter_right_text.config(text=str(positive_counter))
-            question_valuation_text.config(text=machine_answer + " : Das ist richtig")
-            next_question()
-        else:
-            negative_counter += 1
-            counter_wrong_text.config(text=str(negative_counter))
-            question_valuation_text.config(text="Falsch!  Richtige Antwort ist:" + machine_answer)
-
-            mnemonic_text.config(text=mnemonic)
-        if positive_counter + negative_counter == total_tries:
-            machine_answer = ""
-            result = 100 * positive_counter / total_tries
-            if result < 30:
-                user_evaluation_text.config(text="Starke Bildungslücke!")
-            elif result < 70:
-                user_evaluation_text.config(text="Das muss besser werden!")
-            else:
-                user_evaluation_text.config(text="Sehr stark!")
-
-        else:
-            next_question()
-        user_entry.delete(0, "end")
-
 
 def next_question():
     global machine_answer, mnemonic  # wird generiert und global gemacht?
@@ -168,6 +119,7 @@ def game_changer():
 state = 1
 positive_counter = 0
 negative_counter = 0
+
 total_tries = 3
 
 machine_answer = ""  # machine_answer wird ein leerer String zugewiesen
