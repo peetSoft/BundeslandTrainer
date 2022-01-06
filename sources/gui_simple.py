@@ -2,8 +2,33 @@ import tkinter as tk
 from base_quiz import Quiz
 from games_data import create_game_collection
 
+## Button Action Functions
+def quit(event=None):
+    root.destroy()
 
-def set_state1():
+def send_button_hover(e):
+    send_button.config(text="(Enter)")
+def send_button_hover_leave(e):
+    send_button.config(text="Absenden")
+
+def canel_button_hover(e):
+    cancel_button.config(text="(Esc)")
+def canel_button_hover_leave(e):
+    cancel_button.config(text="Abbrechen")
+
+def quit_button_hover(e):
+    quit_button.config(text="(Strg+X)")
+def quit_button_hover_leave(e):
+    quit_button.config(text="Beenden")
+
+
+
+
+def set_state1(event=None):
+    """
+    Changes text of labels and state of entrys in different game states.
+    """
+
     global state, positive_counter, negative_counter
     next_question_text.config(text="")
     user_entry.config(state="disabled")
@@ -81,6 +106,11 @@ def set_state4():
 
 
 def send(event=None):
+    """
+    Picks one state of the game.
+    :param event:
+    :return:
+    """
     global state
     if state == 1:
         set_state2()
@@ -97,9 +127,12 @@ def send(event=None):
 
 
 def next_question():
-    global machine_answer, mnemonic  # wird generiert und global gemacht?
-    generic_term, question, machine_answer, mnemonic = quiz.next_question()  # die 4 Variablen werden in Class Quiz
-    # Hergestellt und hier benutzt.
+    """
+
+    :return: txt2
+    """
+    global machine_answer, mnemonic
+    generic_term, question, machine_answer, mnemonic = quiz.next_question()
     txt = quiz.general_question
     txt1 = txt.replace("#generic#", generic_term)  # Was wird hier warum replaced ?
     txt2 = txt1.replace("#question#", question)
@@ -159,7 +192,7 @@ next_question_text = tk.Label(row1, text='', **text_style_parameters)
 
 user_answer_title = tk.Label(row2, text="Antwort: ", **title_style_parameters)
 user_entry = tk.Entry(row2, width=40, state="disabled")
-send_button = tk.Button(row2, text="Absenden", command=send, bg="#ffffcc")  ## Absenden in der GUI löst send() aus
+send_button = tk.Button(row2, text="Absenden", command=send, bg="#ffffcc",width=10)  ## Absenden in der GUI löst send() aus
 
 question_valuation_title = tk.Label(row3, text="Resultat: ", **title_style_parameters)
 question_valuation_text = tk.Label(row3, **text_style_parameters)
@@ -178,8 +211,8 @@ user_evaluation_text = tk.Label(row7, **text_style_parameters)
 
 hint_text = tk.Label(row8, text='Hint', bg="#c2d6d6", font=("Courier", 10, "italic"), width=text_width + 20, anchor="w")
 state_text = tk.Label(row8, text=str(state), font=("Courier", 10, "italic"))
-cancel_button = tk.Button(row9, text="Abbrechen", bg="#ffffcc", command=set_state1)
-quit_button = tk.Button(row9, text="Beenden", bg="#ffffcc", command=lambda: root.destroy())
+cancel_button = tk.Button(row9, text="Abbrechen", bg="#ffffcc", width=10, command=set_state1)
+quit_button = tk.Button(row9, text="Beenden", bg="#ffffcc",width=10, command=lambda: root.destroy())
 # Layout-Manager
 ## Frames .pack2 row0.pack(pady=(10, 10))
 row0.pack(fill="x", pady=(10, 10))
@@ -214,11 +247,24 @@ user_evaluation_title.pack(**title_pack_parameter)
 user_evaluation_text.pack(side="left", anchor="w")
 hint_text.pack(side="left", anchor="w")
 state_text.pack(side="left", padx=10)
-cancel_button.pack(side="left", anchor="w", padx=(500, 10))
+cancel_button.pack(side="left", anchor="w", padx=(413, 10))
 quit_button.pack(side="left", anchor="w")
 
-root.bind('<Return>', send)
+## Hover over Buttons
+send_button.bind("<Enter>", send_button_hover)
+send_button.bind("<Leave>", send_button_hover_leave)
 
+cancel_button.bind("<Enter>", canel_button_hover)
+cancel_button.bind("<Leave>", canel_button_hover_leave)
+
+quit_button.bind("<Enter>", quit_button_hover)
+quit_button.bind("<Leave>", quit_button_hover_leave)
+
+
+
+root.bind('<Return>', send)
+root.bind('<Control-x>', quit)
+root.bind('<Escape>', set_state1)
 ## Menu
 gui_menu = tk.Menu(root)
 root.config(menu=gui_menu)

@@ -9,7 +9,7 @@ def create_game_collection():
         DataStateCapital(),
         DataEnDe()
     ]
-    return 0, games
+    return 0, games   # --> Return 0, Kann ich alles returnen auch wenn es nichts mit der Funktion zu tun hat?
 
 
 class DataStateCapital:
