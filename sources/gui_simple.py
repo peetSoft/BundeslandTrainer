@@ -276,6 +276,9 @@ game_menu = tk.Menu(gui_menu)
 gui_menu.add_cascade(label="Game", menu=game_menu)
 for gi in range(len(games)):
     game_menu.add_radiobutton(label=games[gi].game_name, variable=game_index, value=gi, command=game_changer)
+    key = '<Control-'+str(gi+1)+'>'
+    root.bind(key, game_changer)
+
 game_changer()
 
 #set_state1()
