@@ -263,7 +263,7 @@ quit_button.bind("<Leave>", quit_button_hover_leave)
 
 
 root.bind('<Return>', send)
-root.bind('<Control-x>', quit)
+root.bind('Control-x', quit)
 root.bind('<Escape>', set_state1)
 ## Menu
 gui_menu = tk.Menu(root)
