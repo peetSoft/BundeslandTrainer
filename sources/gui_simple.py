@@ -2,31 +2,17 @@ import tkinter as tk
 from base_quiz import Quiz
 from games_data import create_game_collection
 
-## Button Action Functions
-def quit(event=None):
-    root.destroy()
-
-def send_button_hover(e):
-    send_button.config(text="(Enter)")
-def send_button_hover_leave(e):
-    send_button.config(text="Absenden")
-
-def canel_button_hover(e):
-    cancel_button.config(text="(Esc)")
-def canel_button_hover_leave(e):
-    cancel_button.config(text="Abbrechen")
-
-def quit_button_hover(e):
-    quit_button.config(text="(Strg+X)")
-def quit_button_hover_leave(e):
-    quit_button.config(text="Beenden")
-
-
-
+"""
+The game can be in 4 different states: 
+state1 = Game Start
+state2 = The question is asked
+state3 = Answer inputted by user
+state4 = Evaluation of the user answers
+"""
 
 def set_state1(event=None):
     """
-    Changes text of labels and state of entrys in different game states.
+
     """
 
     global state, positive_counter, negative_counter
@@ -45,7 +31,7 @@ def set_state1(event=None):
 
 def set_state2():
     global state
-    next_question_text.config(text=str(negative_counter+positive_counter+1)+"."+next_question())
+    next_question_text.config(text=str(negative_counter + positive_counter + 1) + "." + next_question())
     user_entry.config(state='normal')
     user_entry.focus_force()
     question_valuation_text.config(text="")
@@ -125,7 +111,6 @@ def send(event=None):
         set_state2()
 
 
-
 def next_question():
     """
 
@@ -139,8 +124,10 @@ def next_question():
     return txt2
 
 
-def game_changer():
+def game_changer(index= None):
     global quiz, current_game_name_label, games
+    if index is not None:
+        game_index.set(index)
     game = games[game_index.get()]
     current_game_name_label.config(text=game.game_name)
     quiz.config(game.quan, game.general_question, game.generic_term_1, game.generic_term_2,
@@ -184,7 +171,8 @@ row9 = tk.Frame(root)
 # Parameters as dictionary
 title_style_parameters = {"bg": "#ff9933", "font": 18, "width": 11, "anchor": "w"}
 text_style_parameters = {'bg': text_color, 'font': 18, 'width': text_width, 'anchor': "w"}
-## Labels Entrys Button (text,size,fonts,bg)
+
+# Labels Entrys Button (text,size,fonts,bg)
 current_game_name_label = tk.Label(row0, bg="#5d6d7e", font=20)
 
 next_question_title = tk.Label(row1, text='Frage: ', **title_style_parameters)
@@ -192,7 +180,8 @@ next_question_text = tk.Label(row1, text='', **text_style_parameters)
 
 user_answer_title = tk.Label(row2, text="Antwort: ", **title_style_parameters)
 user_entry = tk.Entry(row2, width=40, state="disabled")
-send_button = tk.Button(row2, text="Absenden", command=send, bg="#ffffcc",width=10)  ## Absenden in der GUI löst send() aus
+send_button = tk.Button(row2, text="Absenden", command=send, bg="#ffffcc",
+                        width=10)  ## Absenden in der GUI löst send() aus
 
 question_valuation_title = tk.Label(row3, text="Resultat: ", **title_style_parameters)
 question_valuation_text = tk.Label(row3, **text_style_parameters)
@@ -212,9 +201,9 @@ user_evaluation_text = tk.Label(row7, **text_style_parameters)
 hint_text = tk.Label(row8, text='Hint', bg="#c2d6d6", font=("Courier", 10, "italic"), width=text_width + 20, anchor="w")
 state_text = tk.Label(row8, text=str(state), font=("Courier", 10, "italic"))
 cancel_button = tk.Button(row9, text="Abbrechen", bg="#ffffcc", width=10, command=set_state1)
-quit_button = tk.Button(row9, text="Beenden", bg="#ffffcc",width=10, command=lambda: root.destroy())
+quit_button = tk.Button(row9, text="Beenden", bg="#ffffcc", width=10, command=root.destroy)
 # Layout-Manager
-## Frames .pack2 row0.pack(pady=(10, 10))
+# Frames .pack2 row0.pack(pady=(10, 10))
 row0.pack(fill="x", pady=(10, 10))
 row1.pack(fill="x", pady=(10, 10))
 row2.pack(fill="x", pady=(10, 10))
@@ -228,7 +217,7 @@ row9.pack(fill="x", pady=(10, 10))
 
 title_pack_parameter = {"side": "left", "anchor": "w", "padx": (0, 40)}
 
-## Labels, Entry, Button, .pack
+# Labels, Entry, Button, .pack
 current_game_name_label.pack()
 next_question_title.pack(**title_pack_parameter)
 next_question_text.pack(side="left", anchor="w")
@@ -250,22 +239,20 @@ state_text.pack(side="left", padx=10)
 cancel_button.pack(side="left", anchor="w", padx=(413, 10))
 quit_button.pack(side="left", anchor="w")
 
-## Hover over Buttons
-send_button.bind("<Enter>", send_button_hover)
-send_button.bind("<Leave>", send_button_hover_leave)
+# Hover over Buttons
+send_button.bind("<Enter>", lambda e: send_button.config(text="(Enter)"))
+send_button.bind("<Leave>", lambda e: send_button.config(text="Absenden"))
 
-cancel_button.bind("<Enter>", canel_button_hover)
-cancel_button.bind("<Leave>", canel_button_hover_leave)
+cancel_button.bind("<Enter>", lambda e: cancel_button.config(text="(Esc)"))
+cancel_button.bind("<Leave>", lambda e: cancel_button.config(text="Abbrechen"))
 
-quit_button.bind("<Enter>", quit_button_hover)
-quit_button.bind("<Leave>", quit_button_hover_leave)
-
-
+quit_button.bind("<Enter>", lambda e: quit_button.config(text="(Strg+X)"))
+quit_button.bind("<Leave>", lambda e: quit_button.config(text="Beenden"))
 
 root.bind('<Return>', send)
-root.bind('Control-x', quit)
+root.bind('<Control-x>', lambda e: root.destroy())
 root.bind('<Escape>', set_state1)
-## Menu
+# Menu
 gui_menu = tk.Menu(root)
 root.config(menu=gui_menu)
 
@@ -276,10 +263,10 @@ game_menu = tk.Menu(gui_menu)
 gui_menu.add_cascade(label="Game", menu=game_menu)
 for gi in range(len(games)):
     game_menu.add_radiobutton(label=games[gi].game_name, variable=game_index, value=gi, command=game_changer)
-    key = '<Control-'+str(gi+1)+'>'
-    root.bind(key, game_changer)
+    key = '<Control-Key-' + str(gi + 1) + '>'
+    root.bind(key, lambda e: game_changer(gi))
 
 game_changer()
 
-#set_state1()
+# set_state1()
 root.mainloop()
