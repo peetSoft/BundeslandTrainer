@@ -10,6 +10,7 @@ state3 = Answer inputted by user
 state4 = Evaluation of the user answers
 """
 
+
 def set_state1(event=None):
     """
 
@@ -124,10 +125,12 @@ def next_question():
     return txt2
 
 
-def game_changer(index= None):
+def game_changer(event=None):
     global quiz, current_game_name_label, games
-    if index is not None:
-        game_index.set(index)
+    if event is not None:
+        d = int(event.char)
+        c = d-1
+        game_index.set(c)
     game = games[game_index.get()]
     current_game_name_label.config(text=game.game_name)
     quiz.config(game.quan, game.general_question, game.generic_term_1, game.generic_term_2,
@@ -255,16 +258,17 @@ root.bind('<Escape>', set_state1)
 # Menu
 gui_menu = tk.Menu(root)
 root.config(menu=gui_menu)
+game_index = tk.IntVar(value=1)
 
-gi, games = create_game_collection()
-game_index = tk.IntVar(value=gi)
+gi, games = create_game_collection()  # gi = 0, games =[ DataEnDe(),DataStateCapital() ]
 
 game_menu = tk.Menu(gui_menu)
 gui_menu.add_cascade(label="Game", menu=game_menu)
 for gi in range(len(games)):
-    game_menu.add_radiobutton(label=games[gi].game_name, variable=game_index, value=gi, command=game_changer)
+    game_menu.add_radiobutton(label=games[gi].game_name, variable=game_index,
+                              value=gi, command=game_changer)
     key = '<Control-Key-' + str(gi + 1) + '>'
-    root.bind(key, lambda e: game_changer(gi))
+    root.bind(key, game_changer)
 
 game_changer()
 
